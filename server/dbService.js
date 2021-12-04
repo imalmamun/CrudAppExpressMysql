@@ -23,7 +23,7 @@ class DbService {
   static getDbServiceInstance() {
     return instance ? instance : new DbService();
   }
-
+  // getting data
   async getAllData() {
     try {
       const response = await new Promise((resolve, reject) => {
@@ -35,7 +35,7 @@ class DbService {
           resolve(result);
         });
       });
-      console.log(response);
+      // console.log(response);
       return response;
     } catch (error) {
       console.log(error.message);
@@ -59,32 +59,68 @@ class DbService {
       return {
         id: response.insertId,
         name: name,
-        dateAdded: dateAdded
+        dateAdded: dateAdded,
       };
     } catch (err) {
       console.log(err);
     }
   }
   // delete func here....
-  async deleteRow(id){
+  async deleteRow(id) {
     try {
       // const id = parseInt(id1,10);
       const response = await new Promise((resolve, reject) => {
         const query = `DELETE FROM names WHERE id = ?`;
-        connection.query(query,[id], (err, result) => {
+        connection.query(query, [id], (err, result) => {
           if (err) {
             reject(new Error(err.message));
           }
           resolve(result.affectedRows);
-          // console.log(err);
+          console.log(err);
         });
       });
       // console.log();
-      return response === 1 ? true : false;
+      return response === 1 ? { success: true } : false;
     } catch (err) {
-      return false + " hi";
+      return false + "hi";
     }
   }
+
+  // update
+  async updateRow(name, id) {
+    try {
+      const response = await new Promise((resolve, reject) => {
+        const query = "UPDATE names SET name = ? WHERE id = ?";
+        connection.query(query, [name, id], (err, result) => {
+          if (err) {
+            reject = new Error(err.message);
+          }
+          resolve(result);
+        });
+      });
+      return response;
+    } catch (err) {
+      return err;
+    }
+  }
+  // search
+  async searchByName(name) {
+    try {
+      const response = await new Promise((resolve, reject) => {
+        const query = "SELECT * FROM names WHERE name = ?";
+        connection.query(query, [name], (err, results) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(results);
+        });
+      });
+      return response;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  // lll
 }
 
 module.exports = DbService;
